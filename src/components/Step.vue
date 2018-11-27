@@ -29,6 +29,7 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="dob"
+                  :rules="dobRules"
                   label="Date of Birth"
                   placeholder="MM-DD-YYYY"
                   hint="Enter your Date of Birth here"
@@ -37,6 +38,7 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="preferredNumber"
+                  :rules="numberRules"
                   label="Preferred Number"
                   placeholder="XXX-XXX-XXXX"
                   required
@@ -65,6 +67,7 @@
             <v-btn
               color="primary"
               @click="e1 = 2"
+              :disabled="!isComplete"
             >
               Confirm Identity
             </v-btn>
@@ -111,16 +114,30 @@
       return {
         e1: 0,
         valid: true,
-        firstName: 'John',
+        firstName: 'Johnny',
         lastName: 'Smith',
         dob: '',
+        dobRules: [
+          v => !!v || 'Date of Birth is required',
+          v => (/^((0|1)\d{1})-((0|1|2)\d{1})-((19|20)\d{2})/g).test(v) || 'Date of Birth must be valid'
+        ],
         email: 'john.smith@email.com',
         preferredNumber: '',
-        phoneType: 'Mobile',
+        numberRules: [
+          v => !!v || 'Preferred number is required',
+          v => (/^(?:\(\d{3}\)?\s|\d{3}-)\d{3}-\d{4}$/).test(v) || 'Preferred number must be valid'
+        ],
+        phoneType: '',
         items: [
           'Mobile',
-          'Home'
+          'Home',
+          'Work'
         ]
+      }
+    },
+    computed: {
+      isComplete() {
+        return this.dob && this.preferredNumber && this.phoneType && this.fields.dob.validated && this.fields.preferredNumber.validated && this.fields.phoneType.validated;
       }
     }
   }
